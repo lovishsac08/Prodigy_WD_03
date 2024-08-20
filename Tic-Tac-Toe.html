@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: lightgrey;
+        }
+
+        #scoreboard {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            gap: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #scoreboard div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #tic-tac-toe {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            justify-content: center;
+            padding-top: 200px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: lightgrey;
+            transition-duration: 0.2s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="scoreboard">
+        <div>Player X<span id="scoreX">0</span> </div>
+        <div>Player O<span id="scoreO">0</span> </div>
+    </div>
+    <div id="tic-tac-toe">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+</body>
+<script>
+    const cells = document.querySelectorAll('.cell');
+    let currentPlayer = 'X';
+    const board = Array(9).fill(null);
+    let scoreX = 0;
+    let scoreO = 0;
+
+    cells.forEach(cell => {
+        cell.addEventListener('click', () => {
+            const index = cell.getAttribute('data-index');
+            if (!board[index]) {
+                board[index] = currentPlayer;
+                cell.textContent = currentPlayer;
+                if (checkWin(currentPlayer)) {
+                    alert(`${currentPlayer} wins!`);
+                    updateScore(currentPlayer);
+                    resetGame();
+                } else if (board.every(cell => cell)) {
+                    alert('Draw!');
+                    resetGame();
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+        });
+    });
+
+    function checkWin(player) {
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+        return winPatterns.some(pattern =>
+            pattern.every(index => board[index] === player)
+        );
+    }
+
+    function updateScore(player) {
+        if (player === 'X') {
+            scoreX++;
+            document.getElementById('scoreX').textContent = scoreX;
+        } else {
+            scoreO++;
+            document.getElementById('scoreO').textContent = scoreO;
+        }
+    }
+
+    function resetGame() {
+        board.fill(null);
+        cells.forEach(cell => cell.textContent = '');
+        currentPlayer = 'X';
+    }
+
+</script>
+
+</html>
